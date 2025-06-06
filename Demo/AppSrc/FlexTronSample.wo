@@ -1,0 +1,137 @@
+﻿Use cWebView.pkg
+Use cWebPanel.pkg
+Use cWebForm.pkg 
+Use cWebGroup.pkg
+Use cWebMenuGroup.pkg 
+Use cWebMenuItem.pkg
+Use cWebSignaturePad.pkg
+Use cWebButton.pkg
+Use cWebImage.pkg
+Use cWebCheckBox.pkg
+Use File_dlg.pkg
+Use cWebColorForm.pkg
+
+Object oFlexTronSample is a cWebView
+
+    // Your DDO structure will go here
+    Set peViewType to vtUndefined
+    Set pbShowCaption to False
+    Set Verify_Save_msg to 0 // don't confirm saves
+    
+    Set psCaption to "Signature Pad"
+
+//*** we have to decide what we are doing with this.
+//    Set psBreadcrumbCaption to "Basic Zoom View"
+//    Set psHeaderCaption to "Basic Zoom View"
+
+    Set piMaxWidth to 1024
+    Set piColumnCount to 12
+
+    Object oWebMainPanel is a cWebPanel
+        Set piColumnCount to 12
+        WebSetResponsive piColumnCount rmMobile to 6
+        
+        // place controls here.
+        // Your view will grow as controls are added
+
+        // This shows how using groups can be an effective to create a responsive view.
+        
+        Object oGroup1 is a cWebGroup
+            Set piColumnCount to 12
+            Set piColumnSpan to 7
+            Set psCaption to "Sign here"
+
+            Object oSignaturePad1 is a cWebSignaturePad
+                Set piColumnSpan to 12
+                Set pbShowLabel to False
+                Set piHeight to 200
+                Set pbServerOnEnd to True
+                
+                Property String psSaveToPath ""
+                                
+                Procedure OnProcessSignature String sSignatureData
+                    String sPath
+                    
+                    Get psSaveToPath to sPath
+                    If (sPath = "") Begin
+                        WebSet psURL of oLastSignImg to sSignatureData
+                    End
+                    Else Begin
+                        Send SaveToPngFile sPath sSignatureData
+                        Set psSaveToPath to ""
+                    End
+                End_Procedure
+                
+                Procedure OnEnd
+                    Forward Send OnEnd
+                    WebSet pbEnabled of oSignBtn to True
+                End_Procedure
+            End_Object
+        
+            WebSetResponsive piColumnCount rmMobile to 1
+        End_Object
+
+        Object oWebColorForm1 is a cWebColorForm
+            Set piColumnSpan to 5
+            Set psLabel to "Color:"
+            Set psValue to "rgb(0,0,0)"
+            Set peColorFormat to colorFormatRGB
+            Set pbServerOnChange to True
+
+            Procedure OnChange String sNewValue String sOldValue
+                WebSet psPenColor of oSignaturePad1 to sNewValue
+            End_Procedure
+        End_Object
+
+        Object oSignBtn is a cWebButton
+            Set piColumnSpan to 2
+            Set psCaption to "Sign"
+            Set pbEnabled to False
+        
+            Procedure OnClick
+                Send ProcessSignature of oSignaturePad1
+            End_Procedure
+        End_Object
+
+        Object oWebButton1 is a cWebButton
+            Set piColumnSpan to 2
+            Set psCaption to "Save to file"
+            Set piColumnIndex to 2
+
+            Object oSaveAsDialog is a SaveAsDialog
+                Set Filter_String to "PNG Image|*.png"
+            End_Object
+        
+            Procedure OnClick
+                Boolean bOk
+                String sPath
+            
+                Get Show_Dialog of oSaveAsDialog to bOk
+                If (bOk) Begin
+                    Get File_Name of oSaveAsDialog to sPath
+                    Set psSaveToPath of oSignaturePad1 to sPath
+                    Send ProcessSignature of oSignaturePad1
+                End
+            End_Procedure
+        End_Object
+
+        Object oClearBtn is a cWebButton
+            Set piColumnSpan to 2
+            Set psCaption to "Clear"
+            Set piColumnIndex to 5
+        
+            Procedure OnClick
+                Send ClearSignature of oSignaturePad1
+                WebSet pbEnabled of oSignBtn to False
+            End_Procedure
+        End_Object
+
+        Object oLastSignImg is a cWebImage
+            Set piColumnSpan to 7
+            Set pbShowBorder to True
+            Set piHeight to 200
+        End_Object
+        
+    End_Object 
+
+End_Object

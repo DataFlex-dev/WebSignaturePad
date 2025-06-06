@@ -1,0 +1,186 @@
+﻿Use DFAllEnt.pkg
+Use cFlexTronPanel.pkg
+Use cLocalWebAppHost.pkg
+Use cWebPanel.pkg
+Use cWebMenuButton.pkg
+Use cWebBreadcrumb.pkg
+Use cWebActionBar.pkg
+Use cWebButton.pkg
+Use cWebMenuItem.pkg
+
+Object oHtmlHelp is a cHtmlHelp
+End_Object
+
+Object oApplication is a cApplication
+    Set peHelpType to htHtmlHelp
+
+    Object oConnection is a cConnection
+        Use LoginEncryption.pkg
+        Use DatabaseLoginDialog.dg
+    End_Object
+
+End_Object
+
+Object oMain is a cFlexTronPanel
+    Set Location to 4 3
+    Set Size to 300 500
+
+    Object oLocalWebAppHost is a cLocalWebAppHost
+        // Windows View Properties
+        Set Size to 300 500
+        Set Location to 0 0
+        Set peAnchors to anAll
+        
+        // Enable DevTools if you want, a normal production application should not have this.
+        Set pbAreDevToolsEnabled to False
+        Set pbAreDefaultContextMenusEnabled to False
+        
+        // From here on web
+        Set psTheme to "Df_Material"
+        Set peAlignView to alignCenter
+        Set psApplicationTitle to "My Project"
+    
+        // It is important to set this so that all views will default
+        // to drill down style views.
+        Set peApplicationStyle to wvsDrillDown
+        Set peApplicationStateMode to asmHistoryAndUrls
+        Set pbAreBrowserAcceleratorKeysEnabled to True
+        
+        //  This includes the signaturepad JavaScript
+        Procedure OnDefineScriptIncludes String[]  ByRef aScriptHtml
+            Forward Send OnDefineScriptIncludes (&aScriptHtml)
+            
+            Move """
+                <script src="WebSignaturePad/signature_pad.min.js"></script>
+                <script src="WebSignaturePad/WebSignaturePad.js"></script>
+                """ to aScriptHtml[-1]
+            
+        End_Procedure
+    
+        Object oViewStack is a cWebViewStack
+            // use ghoWebViewStack to reference this object
+        End_Object
+    
+        Procedure HideHeader
+            WebSet pbRender of oHeaderPanel to False
+        End_Procedure
+    
+        Procedure ShowHeader
+            WebSet pbRender of oHeaderPanel to True
+        End_Procedure
+    
+        Object oHeaderPanel is a cWebPanel
+            Set peRegion to prTop
+            Set psCSSClass to "HeaderPanel"
+    
+            Object oMenuPanel is a cWebPanel
+                Set peRegion to prLeft
+                Set piWidth to 50
+    
+                Object oMenuButton is a cWebMenuButton
+                    Set piMenuHeight to 500
+    
+                    Object oViewMenu is a cWebMenuItem
+                        Set psCaption to C_$View
+
+                        Object oSignaturePadItem1 is a cWebMenuItem
+                            Set psCaption to "Signature Pad"
+
+                            WebRegisterPath ntNavigateBegin oFlexTronSample
+
+                            Procedure OnClick
+                                Forward Send OnClick
+                                Send NavigatePath
+                            End_Procedure
+                        End_Object
+                    End_Object
+                End_Object    
+                
+                Object oBackButton is a cWebButton
+                    Set psCSSClass to "WebBack_Icon"
+                    Set pbRender to False
+    
+                    Procedure OnClick
+                        Handle hoTop
+    
+                        Get TopViewHandle of ghoWebViewStack to hoTop
+                        If (hoTop > 0) Begin
+                            Send NavigateCancel of hoTop
+                        End
+                    End_Procedure
+                End_Object
+    
+                Send AddClient of ghoWebViewStack Self
+    
+                Procedure OnUpdateViewStack
+                    Handle hoTop hoDflt
+                    Integer eMode
+                    Boolean bTop
+    
+                    WebGet peMode of (Owner(Self)) to eMode
+    
+                    Get TopViewHandle of ghoWebViewStack to hoTop
+                    Get GetDefaultView to hoDflt
+                    Move (hoTop=0 or hoTop=hoDflt) to bTop
+    
+                    WebSet pbRender of oBackButton to (not(bTop) and eMode >= rmMobile)
+                    WebSet pbRender of oMenuButton to (bTop or eMode < rmMobile)
+                End_Procedure
+            End_Object
+    
+            Object oCaptionPanel is a cWebPanel
+                Set piColumnCount to 12
+    
+                Object oCaptionBreadcrumb is a cWebBreadcrumb
+                    Set peBreadcrumbStyle to crumbCaption
+                    Set piColumnSpan to 12
+                    WebSetResponsive peBreadcrumbStyle rmMobile to crumbDropDown
+                End_Object
+            End_Object
+    
+            Object oActionPanel is a cWebPanel
+                Set peRegion to prRight
+                Set piColumnCount to 1
+                Set piWidth to 120
+    
+                Object oMainActions is a cWebActionBar
+                    Set piColumnSpan to 0
+                    Set peAlign to alignRight
+                End_Object
+            End_Object
+    
+            Object oBreadcrumbPanel is a cWebPanel
+                Set peRegion to prBottom
+                WebSetResponsive pbRender rmMobile to False
+    
+                Object oHorizontalBreadcrumb is a cWebBreadcrumb
+                    // Do not render this breadcrumb if there is only the Dashboard view in
+                    // the stack
+                    Procedure OnUpdateViewStack
+                        Integer iCount
+                        Get ViewStackSize of ghoWebViewStack to iCount
+                        WebSet pbRender to (iCount > 1)
+    
+                        Forward Send OnUpdateViewStack
+                    End_Procedure
+                End_Object
+            End_Object
+        End_Object
+    
+        //Use SessionManager.wo
+        Use LocalResourceManager.wo
+        Use FlexTronSample.wo
+
+        Set phoDefaultView to oFlexTronSample
+        
+        //  Update caption of the window with new title
+        Procedure OnGeneratePageTitle String  ByRef sTitle Handle hoView String sViewTitle
+            Forward Send OnGeneratePageTitle (&sTitle) hoView sViewTitle
+            
+            Set Label of oMain to sTitle
+        End_Procedure
+    End_Object
+End_Object
+
+Send Activate of oMain
+Start_UI

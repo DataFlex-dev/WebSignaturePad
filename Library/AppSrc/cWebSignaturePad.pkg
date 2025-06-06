@@ -1,0 +1,147 @@
+﻿//
+//  Class: 
+//      cWebSignaturePad
+//  
+//  Serverside class for the signaturepad web control. This control wraps the 
+//  http://szimek.github.io/signature_pad control that allows signatures to be made and send to the
+//  server as base64 encoded image strings. The client-side class is named sp.WebSignaturePad.
+//
+//  Note that this control is provided as is and no official support / maintenance will be provided. 
+//
+//  Revision:
+//      2015/03/30 (HW, DAW)
+//          Initial version developed as a sample for Synergy 2015.
+//
+
+Use cWebBaseControl.pkg
+
+Class cWebSignaturePad is a cWebBaseControl
+    
+    Procedure Construct_Object
+        Forward Send Construct_Object
+        
+        { WebProperty=True }
+        Property Integer piHeight 0        // Is the explicit fixed height of the control (for most controls you leave this set to 0 so the control's style settings determine the height). Ignored when pbFillHeight is True.
+        { WebProperty=True }                 
+        Property Integer piMinHeight 50     // Minimum control height (ignored unless pbFillHeight is True)
+        
+        { WebProperty=True }
+        Property Integer piImageHeight 0    // Determines the height of the signature image, if 0 the control its dimensions are used. Note that changing at runtime (WebSet) is not supported.
+        { WebProperty=True }
+        Property Integer piImageWidth 0     // Determines the widht of the signature image, if 0 the control its dimensions are used. Note that changing at runtime (WebSet) is not supported.
+        { WebProperty=True }
+        Property String psPenColor "rgba(0,0,0,1)"  //  Determines the color of the signature
+        { WebProperty=True }
+        Property String psBackgroundColor "rgb(255,255,255)"  //  Determines the color of the signature
+        
+        
+        { WebProperty=True }
+        Property Boolean pbServerOnBegin False
+        { WebProperty=True }
+        Property String psClientOnBegin ""
+        
+        { WebProperty=True }
+        Property Boolean pbServerOnEnd False
+        { WebProperty=True }
+        Property String psClientOnEnd ""
+        
+        Set psJSClass to "sp.WebSignaturePad"
+    End_Procedure
+    
+    //
+    //  Clears the signature control data.
+    //
+    Procedure ClearSignature
+        Send ClientAction "clearSignature"
+    End_Procedure
+    
+    //
+    //  Sends a clientaction to the client that will send the signature to the server. This will 
+    //  be a separate request and it will trigger the OnProcessSignature.
+    //
+    Procedure ProcessSignature
+        Send ClientAction "processSignature"
+    End_Procedure
+    
+    //
+    //  Send by the client to pass the signature data. The signature data is sent as a base64 
+    //  encoded string in the URL format (prefixed by the mime type) so that it can be set as image
+    //  url for modern browsers.
+    //
+    //  Note that the current implementation is restricted by the maximum argument size.
+    //
+    { MethodType=Event }
+    Procedure OnProcessSignature String sSignatureData
+        Integer iArgSize
+        
+        Get_Argument_Size to iArgSize
+        
+        If (Length(sSignatureData) >= iArgSize - 5) Begin
+            Error DFERR_PROGRAM "Image too large, increase argument size!"
+        End
+    End_Procedure
+    
+    //
+    //  Event send when the user starts making the signature.
+    //
+    { MethodType=Event }
+    Procedure OnBegin
+    End_Procedure
+    
+    //
+    //  Event send when the user finishes making the signature (releases the finger).
+    //
+    { MethodType=Event }
+    Procedure OnEnd
+    End_Procedure
+    
+    
+    { Visibility=Private }
+    Function Base64DecodeString String sBase64 Returns UChar[]
+        Pointer pBinary
+        String sBinary
+        Integer iVoid iLen
+        UChar[] ucResult
+    
+        Move (Base64Decode(AddressOf(sBase64), &iLen)) to pBinary
+        Move (ResizeArray(ucResult, iLen, 0)) to ucResult
+        Move (MemCopy(AddressOf(ucResult), pBinary, iLen)) to iVoid
+        Move (Free(pBinary)) to iVoid
+        
+        Function_Return ucResult
+    End_Function
+    
+    /*
+    Helper function that saves a signature to disk. Call with the sSignatureData received in OnProcessSignature.
+    */
+    Procedure SaveToPngFile String sPath String sSignatureData
+        UChar[] ucImage
+        String sBase64 sPostFix
+        Integer iChnl
+        
+        Move "data:image/png;base64," to sPostFix
+        
+        If (Left(sSignatureData, Length(sPostFix)) = sPostFix) ;
+            Move (Right(sSignatureData, Length(sSignatureData) - Length(sPostFix))) to sBase64
+        Else ;
+            Move sSignatureData to sPostFix
+        
+        Get Base64DecodeString sBase64  to ucImage
+        
+        Move (Seq_New_Channel()) to iChnl
+        Direct_Output channel iChnl ("binary:" + sPath)
+        Write channel iChnl ucImage
+        Close_Output channel iChnl
+        Send Seq_Release_Channel iChnl
+    End_Procedure
+    
+    Procedure End_Construct_Object
+        Forward Send End_Construct_Object
+        
+        //  Publish procedures that are called by the client
+        WebPublishProcedure OnProcessSignature  
+        WebPublishProcedure OnBegin
+        WebPublishProcedure OnEnd
+    End_Procedure
+
+End_Class
