@@ -1,0 +1,20 @@
+{
+    "description": "Web control for capturing signatures.",
+    "df": 26.0,
+    "package": {
+        "df-max": 26.0,
+        "df-min": 26.0,
+        "htmlIncludes": [
+            "Custom/signature_pad.min.js",
+            "Custom/WebSignaturePad.js"
+        ],
+        "icon": "SignaturePad.png",
+        "version": "1.0.1"
+    },
+    "paths": {
+        "fileList": "DummyFilelist.cfg"
+    },
+    "studio": {
+        "DefaultFormHeight": 12
+    }
+}

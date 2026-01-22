@@ -9,6 +9,8 @@
 //  Note that this control is provided as is and no official support / maintenance will be provided. 
 //
 //  Revision:
+//      1.0.1 (HW, DAW)
+//          Cleaned up and created package.
 //      2015/03/30 (HW, DAW)
 //          Initial version developed as a sample for Synergy 2015.
 //
@@ -20,29 +22,29 @@ Class cWebSignaturePad is a cWebBaseControl
     Procedure Construct_Object
         Forward Send Construct_Object
         
-        { WebProperty=True }
+        { WebProperty=Client }
         Property Integer piHeight 0        // Is the explicit fixed height of the control (for most controls you leave this set to 0 so the control's style settings determine the height). Ignored when pbFillHeight is True.
-        { WebProperty=True }                 
+        { WebProperty=Client }                 
         Property Integer piMinHeight 50     // Minimum control height (ignored unless pbFillHeight is True)
         
-        { WebProperty=True }
+        { WebProperty=Client }
         Property Integer piImageHeight 0    // Determines the height of the signature image, if 0 the control its dimensions are used. Note that changing at runtime (WebSet) is not supported.
-        { WebProperty=True }
+        { WebProperty=Client }
         Property Integer piImageWidth 0     // Determines the widht of the signature image, if 0 the control its dimensions are used. Note that changing at runtime (WebSet) is not supported.
-        { WebProperty=True }
+        { WebProperty=Client }
         Property String psPenColor "rgba(0,0,0,1)"  //  Determines the color of the signature
-        { WebProperty=True }
+        { WebProperty=Client }
         Property String psBackgroundColor "rgb(255,255,255)"  //  Determines the color of the signature
         
         
-        { WebProperty=True }
+        { WebProperty=Client }
         Property Boolean pbServerOnBegin False
-        { WebProperty=True }
+        { WebProperty=Client }
         Property String psClientOnBegin ""
         
-        { WebProperty=True }
+        { WebProperty=Client }
         Property Boolean pbServerOnEnd False
-        { WebProperty=True }
+        { WebProperty=Client }
         Property String psClientOnEnd ""
         
         Set psJSClass to "sp.WebSignaturePad"
@@ -68,17 +70,8 @@ Class cWebSignaturePad is a cWebBaseControl
     //  encoded string in the URL format (prefixed by the mime type) so that it can be set as image
     //  url for modern browsers.
     //
-    //  Note that the current implementation is restricted by the maximum argument size.
-    //
     { MethodType=Event }
     Procedure OnProcessSignature String sSignatureData
-        Integer iArgSize
-        
-        Get_Argument_Size to iArgSize
-        
-        If (Length(sSignatureData) >= iArgSize - 5) Begin
-            Error DFERR_PROGRAM "Image too large, increase argument size!"
-        End
     End_Procedure
     
     //

@@ -1,0 +1,12 @@
+{
+    "dependencies": [
+        "DataFlex-dev/SignaturePad#1.0.1"
+    ],
+    "df": 26.0,
+    "projects": [
+        "FlexTronDemo.src"
+    ],
+    "studio": {
+        "DefaultFormHeight": 12
+    }
+}
