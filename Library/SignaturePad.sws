@@ -1,4 +1,7 @@
 {
+    "dependencies": [
+        "DataFlex-dev/Web UI#>=1.0.0"
+    ],
     "description": "Web control for capturing signatures.",
     "df": 26.0,
     "package": {
@@ -9,7 +12,11 @@
             "Custom/WebSignaturePad.js"
         ],
         "icon": "SignaturePad.png",
-        "version": "1.0.1"
+        "includeFiles": [
+            "CHANGELOG.md"
+        ],
+        "version": "1.0.2",
+        "license": "MIT"
     },
     "paths": {
         "fileList": "DummyFilelist.cfg"

@@ -1,10 +1,12 @@
 [Workspace]
-Home=.
+Home=.\
 AppHTMLPath=AppHtml
 AppSrcPath=AppSrc
-DataPath=
-DDSrcPath=
+DataPath=.
+DDSrcPath=.
 IdeSrcPath=IdeSrc
-ProgramPath=
+ProgramPath=.
 FileList=DummyFilelist.cfg
 Description=Web control for capturing signatures.
+BitmapPath=.
+HelpPath=.
