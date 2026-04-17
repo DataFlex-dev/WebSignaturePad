@@ -1,0 +1,27 @@
+{
+    "dependencies": [
+        "DataFlex-dev/Web UI#^1.0.0"
+    ],
+    "description": "Web control for capturing signatures.",
+    "df": 26.0,
+    "package": {
+        "df-max": 26.0,
+        "df-min": 26.0,
+        "htmlIncludes": [
+            "Custom/signature_pad.min.js",
+            "Custom/WebSignaturePad.js"
+        ],
+        "icon": "SignaturePad.png",
+        "includeFiles": [
+            "CHANGELOG.md"
+        ],
+        "license": "BSD-3-Clause",
+        "version": "1.0.3"
+    },
+    "paths": {
+        "fileList": "DummyFilelist.cfg"
+    },
+    "studio": {
+        "DefaultFormHeight": 12
+    }
+}

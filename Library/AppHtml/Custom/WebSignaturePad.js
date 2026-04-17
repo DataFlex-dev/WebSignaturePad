@@ -12,6 +12,8 @@ this control.
 Note that this control is provided as is and no official support / maintenance will be provided.
     
 Revision:
+    1.0.1 (HW, DAW)
+        Cleaned up and created package.
     2015/03/30  (HW, DAW) 
         Initial version developed as a sample for Synergy 2015.
 */

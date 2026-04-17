@@ -51,8 +51,8 @@ Object oMain is a cFlexTronPanel
             Forward Send OnDefineScriptIncludes (&aScriptHtml)
             
             Move """
-                <script src="WebSignaturePad/signature_pad.min.js"></script>
-                <script src="WebSignaturePad/WebSignaturePad.js"></script>
+                <script src="Custom/signature_pad.min.js"></script>
+                <script src="Custom/WebSignaturePad.js"></script>
                 """ to aScriptHtml[-1]
             
         End_Procedure
