@@ -1,6 +1,6 @@
 {
     "dependencies": [
-        "DataFlex-dev/Web UI#>=1.0.0"
+        "DataFlex-dev/Web UI#^1.0.0"
     ],
     "description": "Web control for capturing signatures.",
     "df": 26.0,
@@ -15,8 +15,8 @@
         "includeFiles": [
             "CHANGELOG.md"
         ],
-        "version": "1.0.2",
-        "license": "MIT"
+        "license": "BSD-3-Clause",
+        "version": "1.0.3"
     },
     "paths": {
         "fileList": "DummyFilelist.cfg"

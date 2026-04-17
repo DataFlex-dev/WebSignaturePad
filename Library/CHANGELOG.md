@@ -10,7 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.0.2] - 2026-05-03
+## [1.0.3] - 2026-04-17
+- Updated Web UI dependency Semver to ^1.0.0 to prevent updates on breaking changes.
+- Updated package license.
+
+## [1.0.2] - 2026-03-05
 - Added DataFlex-dev/Web UI#>=1.0.0 dependency.
 - Added CHANGELOG.md.
 

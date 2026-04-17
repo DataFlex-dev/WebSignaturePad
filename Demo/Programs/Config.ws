@@ -1,12 +1,12 @@
 [Workspace]
-Home=..
+Home=..\
 AppHTMLPath=AppHtml
 AppSrcPath=AppSrc
 DataPath=Data
 DDSrcPath=DDSrc
-BitmapPath=Bitmaps
+BitmapPath=.
 IdeSrcPath=IdeSrc
-HelpPath=Help
+HelpPath=.
 ProgramPath=Programs
-FileList=Data/Filelist.cfg
+FileList=Data\Filelist.cfg
 Description=SignaturePad Demo
